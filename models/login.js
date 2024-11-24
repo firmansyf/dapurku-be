@@ -4,7 +4,10 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Login extends Model {
     static associate(models) {
-      // define association here (jika ada)
+      Login.belongsTo(models.Registrasi, {
+        foreignKey: 'registrasi_id',
+        onDelete: 'CASCADE'
+      });
     }
   }
 
@@ -18,6 +21,15 @@ module.exports = (sequelize, DataTypes) => {
       password: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      registrasi_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'tbl_registrasi', 
+          key: 'id', 
+        },
+        onDelete: 'CASCADE',
       },
     },
     {

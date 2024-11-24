@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken'); 
 const bcrypt = require('bcrypt'); 
-const { Login } = require('../models'); 
+const { Login, Registrasi } = require('../models'); 
 
 // Secret key untuk JWT (gunakan env variable di produksi)
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -18,7 +18,14 @@ router.post('/login', async (req, res) => {
     }
 
     // Cek apakah pengguna dengan email ini ada
-    const user = await Login.findOne({ where: { email } });
+    const user = await Login.findOne({
+      where: { email },
+      include: [{
+        model: Registrasi,
+        attributes: ['id', 'username', 'email', 'role'],
+      }]
+    });
+
     if (!user) {
       return res.status(401).json({ error: 'Email atau password salah!' });
     }
@@ -41,11 +48,13 @@ router.post('/login', async (req, res) => {
 
     // Respon sukses
     res.status(200).json({
-      message: 'Login berhasil!',
+      message: 'Hore.. anda berhasil Login!',
       token,
       user: {
-        id: user.id,
-        email: user.email,
+        id: user.dataValues.id, 
+        username: user.dataValues.username, 
+        email: user.dataValues.email, 
+        role: user.dataValues.role,
       },
     });
   } catch (error) {

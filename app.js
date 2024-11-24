@@ -21,8 +21,8 @@ app.get('/', (req, res) => {
 });
 
 // Endpoint 
-app.use('/api/auth/regiter', registrasiRoutes); 
-app.use('/api/auth/login', loginRoutes);
+app.use('/api/auth/', registrasiRoutes); 
+app.use('/api/auth/', loginRoutes);
 
 // Start Server
 app.listen(PORT, () => {

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Registrasi } = require('../models');
+const { Registrasi, Login } = require('../models');
 const bcrypt = require('bcrypt'); 
 
 // Endpoint Registrasi
@@ -50,6 +50,13 @@ router.post('/register', async (req, res) => {
       is_active: true, 
       is_verified: false,
       registration_date: new Date(),
+    });
+
+    // Membuat data login di tbl_login yang terhubung dengan registrasi
+    await Login.create({
+      email,
+      password: hashedPassword,
+      registrasi_id: newUser.id,
     });
 
     // Respon sukses

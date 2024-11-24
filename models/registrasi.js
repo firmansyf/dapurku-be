@@ -8,7 +8,9 @@ module.exports = (sequelize, DataTypes) => {
      * This method is automatically called by Sequelize.
      */
     static associate(models) {
-      // Contoh: Registrasi.hasMany(models.OtherModel, { foreignKey: 'registrasiId' });
+      Registrasi.hasOne(models.Login, {
+        foreignKey: 'registrasi_id', // Pastikan nama kolom relasi sesuai dengan yang ada
+      });
     }
   }
 
@@ -23,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       image: {
         type: DataTypes.STRING, 
         allowNull: true, 
+        defaultValue: '',
       },
       username: {
         type: DataTypes.STRING,
@@ -99,7 +102,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: 'Registrasi',
       tableName: 'tbl_registrasi',
-      timestamps: true, // Otomatis mengelola `createdAt` dan `updatedAt`
+      timestamps: true,
     }
   );
 
