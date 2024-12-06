@@ -63,4 +63,23 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Endpoint Logout
+router.post('/logout', async (req, res) => {
+  try {
+    req.session = null;
+
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: true,
+      // sameSite: 'strict'
+    });
+
+    return res.status(200).send({
+      message: "Anda berhasil logout!",
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Terjadi kesalahan pada server.' });
+  }
+})
+
 module.exports = router;
