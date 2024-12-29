@@ -19,11 +19,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      role: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'admin',
+      },
     },
     {
       sequelize,
       modelName: 'LoginAdmin',
-      tableName: 'tbl_login-admin',
+      tableName: 'tbl_login_admin',
       timestamps: true,
     }
   );

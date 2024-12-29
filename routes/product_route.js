@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Product } = require('../models')
+const { authorize, validateProductInput } = require('../middleware');
 
 // Endpoint get product
 router.get('/products', async (req, res) => {
@@ -28,25 +29,31 @@ router.get('/products/:id', async (req, res) => {
 });
 
 // Endpoint untuk menambahkan produk baru
-router.post('/products', async (req, res) => {
+router.post('/products', authorize, validateProductInput, async (req, res) => {
     try {
         const { name, description, price, image } = req.body;
         const newProduct = await Product.create({ name, description, price, image });
-        res.status(201).json(newProduct);
+        res.status(201).json({
+            message: 'Produk berhasil ditambahkan!',
+            product: newProduct
+        });
     } catch (error) {
         res.status(500).json({ error: 'Gagal menambahkan produk.' });
     }
 });
 
 // Endpoint untuk memperbarui produk
-router.put('/products/:id', async (req, res) => {
+router.put('/products/:id', authorize, validateProductInput, async (req, res) => {
     try {
         const { name, description, price, image } = req.body;
         const product = await Product.findByPk(req.params.id);
 
         if (product) {
             await product.update({ name, description, price, image });
-            res.status(200).json(product);
+            res.status(201).json({
+                message: 'Produk berhasil diupdate!',
+                product: product
+            });
         } else {
             res.status(404).json({ error: 'Produk tidak ditemukan.' });
         }
@@ -56,7 +63,7 @@ router.put('/products/:id', async (req, res) => {
 });
 
 // Endpoint untuk menghapus produk
-router.delete('/products/:id', async (req, res) => {
+router.delete('/products/:id', authorize, async (req, res) => {
     try {
         const product = await Product.findByPk(req.params.id);
 
@@ -71,4 +78,4 @@ router.delete('/products/:id', async (req, res) => {
     }
 });
 
-module.exports = router;
+module.exports = router
