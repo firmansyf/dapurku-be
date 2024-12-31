@@ -1,15 +1,59 @@
 const express = require('express');
 const router = express.Router();
 const { Product } = require('../models')
+const { Op } = require('sequelize')
 const { authorize, validateProductInput } = require('../middleware');
 
 // Endpoint get product
 router.get('/products', async (req, res) => {
     try {
-      const products = await Product.findAll();
-      res.status(200).json(products);
+      const { page = 1, limit = 10, search = '', startDate, endDate } = req.query;
+  
+      // Convert page and limit to integers
+      const pageNumber = parseInt(page, 10);
+      const pageSize = parseInt(limit, 10);
+  
+      // Build filters
+      const where = {};
+  
+      // Searching (filter by name or other fields)
+      if (search) {
+        where.name = {
+          [Op.like]: `%${search}%`,
+        };
+      }
+  
+      // Filtering by date range
+      if (startDate && endDate) {
+        where.createdAt = {
+          [Op.between]: [new Date(startDate), new Date(endDate)],
+        };
+      }
+  
+      // Fetch total count for pagination
+      const totalProducts = await Product.count({ where });
+  
+      // Fetch paginated data
+      const products = await Product.findAll({
+        where,
+        offset: (pageNumber - 1) * pageSize,
+        limit: pageSize,
+      });
+  
+      // Respond with structured data
+      res.status(200).json({
+        message: 'Produk berhasil diambil.',
+        data: products,
+        meta: {
+          total: totalProducts,
+          page: pageNumber,
+          limit: pageSize,
+          totalPages: Math.ceil(totalProducts / pageSize),
+        },
+      });
     } catch (error) {
-      res.status(500).json({ error: 'Gagal mendapatkan produk.' });
+      console.error(error);
+      res.status(500).json({ message: 'Gagal mendapatkan produk.', error });
     }
 });
   
