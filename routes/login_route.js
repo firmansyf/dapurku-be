@@ -92,9 +92,12 @@ router.post('/login-admin', async (req, res) => {
       return res.status(400).json({ error: 'Email dan password wajib diisi!' });
     }
 
-    // Verifikasi password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
+    // Cek apakah pengguna dengan email ini ada
+    const user = await LoginAdmin.findOne({
+      where: { email }
+    });
+
+    if (!user) {
       return res.status(401).json({ error: 'Email atau password salah!' });
     }
 
@@ -103,6 +106,7 @@ router.post('/login-admin', async (req, res) => {
       {
         id: user.id,
         email: user.email,
+        role: user.role,
       },
       JWT_SECRET,
       { expiresIn: '1h' }
