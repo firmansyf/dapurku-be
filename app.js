@@ -3,6 +3,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
 // Import route
+const meRoutes = require('./routes/me_route')
 const loginRoutes = require('./routes/login_route')
 const ProductRoutes = require('./routes/product_route')
 const registrasiRoutes = require('./routes/registrasi_route');
@@ -22,9 +23,10 @@ app.get('/', (req, res) => {
 });
 
 // Endpoint 
-app.use('/api/auth/', registrasiRoutes); 
-app.use('/api/auth/', loginRoutes);
+app.use('/api/auth/', registrasiRoutes) 
+app.use('/api/auth/', loginRoutes)
 app.use('/api/v1/', ProductRoutes)
+app.use('/api/v1/', meRoutes)
 
 // Start Server
 app.listen(PORT, () => {
