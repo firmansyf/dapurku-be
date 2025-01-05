@@ -29,26 +29,21 @@ const authorize = (req, res, next) => {
 
 // Middleware for validating product input for admin
 const validateProductInput = (req, res, next) => {
-    const { name, description, price, image } = req.body;
+    const { name, description, price } = req.body;
 
     // Validasi nama produk
-    if (!name || typeof name !== 'string') {
-        return res.status(400).json({ error: 'Nama produk harus berupa string dan tidak boleh kosong.' });
+    if (!name || typeof name !== 'string' || name.trim().length === 0) {
+        return res.status(400).json({ error: 'Nama produk harus berupa string yang valid dan tidak boleh kosong.' });
     }
 
     // Validasi harga produk
-    if (price === undefined || typeof price !== 'number' || price <= 0) {
-        return res.status(400).json({ error: 'Harga produk harus berupa angka positif.' });
-    }
+    // if (price === undefined || typeof price !== 'number' || price <= 0) {
+    //     return res.status(400).json({ error: 'Harga produk harus berupa angka positif.' });
+    // }
 
     // Validasi deskripsi produk (opsional)
-    if (description && typeof description !== 'string') {
-        return res.status(400).json({ error: 'Deskripsi harus berupa string.' });
-    }
-
-    // Validasi URL gambar produk (opsional)
-    if (image && typeof image !== 'string') {
-        return res.status(400).json({ error: 'URL gambar harus berupa string.' });
+    if (description && (typeof description !== 'string' || description.trim().length === 0)) {
+        return res.status(400).json({ error: 'Deskripsi, jika diberikan, harus berupa string yang valid.' });
     }
 
     next();
