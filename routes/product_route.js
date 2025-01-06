@@ -132,24 +132,42 @@ router.post('/products', authorize, upload.single('image'), validateProductInput
 })
 
 // Endpoint untuk memperbarui produk
-router.put('/products/:id', authorize, validateProductInput, async (req, res) => {
+router.put('/products/:id', authorize, upload.single('image'), validateProductInput, async (req, res) => {
     try {
-        const { name, description, price, image } = req.body;
+        const { name, description, price } = req.body;
+
+        // Cari produk berdasarkan ID
         const product = await Product.findByPk(req.params.id);
 
-        if (product) {
-            await product.update({ name, description, price, image });
-            res.status(201).json({
-                message: 'Produk berhasil diupdate!',
-                product: product
-            });
-        } else {
-            res.status(404).json({ error: 'Produk tidak ditemukan.' });
+        if (!product) {
+            return res.status(404).json({ error: 'Produk tidak ditemukan.' });
         }
+
+        // Periksa apakah ada file gambar yang diunggah
+        let imagePath = product.image; // Gunakan gambar lama jika tidak ada file baru
+
+        if (req.file) {
+            // Perbarui jalur gambar jika ada file baru
+            imagePath = `${req.protocol}://${req.get('host')}/uploads/images/${req.file.filename}`;
+        }
+
+        // Perbarui data produk
+        await product.update({
+            name,
+            description,
+            price,
+            image: imagePath,
+        });
+
+        res.status(200).json({
+            message: 'Produk berhasil diperbarui!',
+            product,
+        });
     } catch (error) {
+        console.error('Error memperbarui produk:', error.message);
         res.status(500).json({ error: 'Gagal memperbarui produk.' });
     }
-});
+})
 
 // Endpoint untuk menghapus produk
 router.delete('/products/:id', authorize, async (req, res) => {
