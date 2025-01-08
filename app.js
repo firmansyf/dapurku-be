@@ -7,7 +7,8 @@ const path = require('path');
 const meRoutes = require('./routes/me_route')
 const loginRoutes = require('./routes/login_route')
 const ProductRoutes = require('./routes/product_route')
-const registrasiRoutes = require('./routes/registrasi_route');
+const registrasiRoutes = require('./routes/registrasi_route')
+const usersRoutes = require('./routes/user_route')
 
 const app = express();
 const PORT = 8000;
@@ -28,6 +29,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth/', registrasiRoutes) 
 app.use('/api/auth/', loginRoutes)
 app.use('/api/v1/', ProductRoutes)
+app.use('/api/v1/', usersRoutes)
 app.use('/api/v1/', meRoutes)
 
 // Start Server
