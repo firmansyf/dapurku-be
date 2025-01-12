@@ -1,7 +1,7 @@
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const path = require('path');
+const express = require('express')
+const cookieParser = require('cookie-parser')
+const cors = require('cors')
+const path = require('path')
 
 // Import route
 const meRoutes = require('./routes/me_route')
@@ -9,6 +9,7 @@ const loginRoutes = require('./routes/login_route')
 const ProductRoutes = require('./routes/product_route')
 const registrasiRoutes = require('./routes/registrasi_route')
 const usersRoutes = require('./routes/user_route')
+const cartRoutes = require('./routes/cart_route')
 
 const app = express();
 const PORT = 8000;
@@ -30,9 +31,10 @@ app.use('/api/auth/', registrasiRoutes)
 app.use('/api/auth/', loginRoutes)
 app.use('/api/v1/', ProductRoutes)
 app.use('/api/v1/', usersRoutes)
+app.use('/api/v1/', cartRoutes)
 app.use('/api/v1/', meRoutes)
 
 // Start Server
 app.listen(PORT, () => {
-  console.log(`Server sedang berjalan di port: ${PORT}`);
-});
+  console.log(`Server sedang berjalan di port: ${PORT}`)
+})
