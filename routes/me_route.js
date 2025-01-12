@@ -1,7 +1,7 @@
-const express = require('express');
-const router = express.Router();
-const { Registrasi } = require('../models');
-const { authenticateToken } = require('../middleware');
+const express = require('express')
+const router = express.Router()
+const { Registrasi } = require('../models')
+const { authenticateToken } = require('../middleware')
 
 // Endpoint GET /me
 router.get('/me', authenticateToken, async (req, res) => {
